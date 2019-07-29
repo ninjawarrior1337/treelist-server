@@ -47,7 +47,7 @@ fun refreshDB()
 
     Files.walk(Paths.get(musicDir))
             .filter {
-                Files.isRegularFile(it) && Files.probeContentType(it)?.contains("audio") != null
+                Files.isRegularFile(it) && Files.probeContentType(it).orEmpty().contains("audio")
             }
             .forEach {
                 files.add(AudioFile(it.toAbsolutePath().normalize().toString()))

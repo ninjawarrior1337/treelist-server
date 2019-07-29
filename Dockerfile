@@ -2,6 +2,10 @@ FROM gradle as builder
 
 WORKDIR /opt/treelist
 
+COPY build.gradle.kts .
+
+RUN gradle resolveDependencies
+
 COPY . .
 
 RUN gradle installDist

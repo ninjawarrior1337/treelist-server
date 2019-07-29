@@ -36,6 +36,23 @@ repositories {
     )
 }
 
+task("resolveDependencies") {
+    doLast {
+        project.rootProject.allprojects.forEach { subProject ->
+            subProject.buildscript.configurations.filter {
+                it.isCanBeResolved
+            }.forEach { configuration ->
+                configuration.resolve()
+            }
+            subProject.configurations.filter {
+                it.isCanBeResolved
+            }.forEach { configuration ->
+                configuration.resolve()
+            }
+            }
+        }
+}
+
 dependencies {
     // Use the Kotlin JDK 8 standard library.
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")

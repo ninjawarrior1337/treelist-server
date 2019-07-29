@@ -72,6 +72,9 @@ private fun registerRecursive(root: Path) {
 
 fun main(args: Array<String>)
 {
+    //Print Info
+    print("Music Dir: $musicDir\n")
+    print("Config Dir: $configDir\n")
     //Register Watcher
     registerRecursive(Paths.get(musicDir))
 

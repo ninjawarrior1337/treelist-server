@@ -117,7 +117,11 @@ fun main(args: Array<String>)
                 .send(Paths.get(audioFile.path))
         }
 
-        get("/song/art/{id}")
+        decorator {
+            ctx.setResponseHeader("Access-Control-Allow-Origin", "*")
+            next.apply(ctx)
+        }
+        get("/song/{id}/art")
         {
             val audioFile = getAudioFileFromId(ctx.path("id").value())
             print(audioFile.path)
@@ -130,6 +134,16 @@ fun main(args: Array<String>)
             {
                 ctx.setResponseCode(404).send("Artwork not found")
             }
+        }
+
+        decorator {
+            ctx.setResponseHeader("Access-Control-Allow-Origin", "*")
+            next.apply(ctx)
+        }
+        get("/song/{id}/info") {
+            val audioFile = getAudioFileFromId(ctx.path("id").value())
+            ctx.responseType = MediaType.json
+            audioFile
         }
 
         decorator {

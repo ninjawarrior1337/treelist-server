@@ -9,6 +9,9 @@ import io.github.cdimascio.dotenv.Dotenv
 import io.jooby.MediaType
 import io.jooby.ServerOptions
 import io.jooby.runApp
+import io.netty.handler.codec.http.cors.CorsConfig
+import io.netty.handler.codec.http.cors.CorsConfigBuilder
+import io.netty.handler.codec.http.cors.CorsHandler
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -129,18 +132,26 @@ fun main(args: Array<String>)
             }
         }
 
+        decorator {
+            ctx.setResponseHeader("Access-Control-Allow-Origin", "*")
+            next.apply(ctx)
+        }
         get("/db/get")
         {
-            this.ctx.send(Paths.get("$configDir/db.json"))
-                    .setResponseHeader("Access-Control-Allow-Origin", "*")
+            ctx.send(Paths.get("$configDir/db.json"))
         }
 
+        decorator {
+            ctx.setResponseHeader("Access-Control-Allow-Origin", "*")
+            next.apply(ctx)
+        }
         get("/db/gen")
         {
-            refreshDB()
-            this.ctx.setResponseType(MediaType.json)
-                    .send(Paths.get("$configDir/db.json"))
-                    .setResponseHeader("Access-Control-Allow-Origin", "*")
+            coroutine {
+                refreshDB()
+                ctx.setResponseType(MediaType.json)
+                        .send(Paths.get("$configDir/db.json"))
+            }
         }
 
         setServerOptions(ServerOptions()

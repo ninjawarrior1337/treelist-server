@@ -12,6 +12,7 @@ import io.jooby.runApp
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.jaudiotagger.audio.exceptions.CannotReadException
 import java.io.FileReader
 import java.nio.file.*
 import java.nio.file.FileVisitResult
@@ -47,12 +48,21 @@ fun refreshDB()
 
     Files.walk(Paths.get(musicDir))
             .filter {
-                Files.isRegularFile(it) && Files.probeContentType(it).orEmpty().contains("audio")
+                Files.isRegularFile(it)
             }
             .forEach {
-                files.add(AudioFile(it.toAbsolutePath().normalize().toString()))
+                val audioFile: AudioFile? =
+                    try {
+                        AudioFile(it.toAbsolutePath().normalize().toString())
+                    }
+                    catch (e: CannotReadException)
+                    {
+                        null
+                    }
+                if (audioFile != null) {
+                    files.add(audioFile)
+                }
             }
-
     val fw = Files.newBufferedWriter(Paths.get("$configDir/db.json"))
     fw.write(files.toString())
     fw.close()

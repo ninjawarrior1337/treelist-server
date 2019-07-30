@@ -12,6 +12,7 @@ import java.util.*
 data class AudioFile(@SerializedName("path") val path: String)
 {
     var pathObj: Path = Paths.get(path)
+
     private var audioFile = AudioFileIO.read(pathObj.toFile())
 
     @SerializedName("title")

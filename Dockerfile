@@ -14,8 +14,6 @@ FROM openjdk:8-alpine
 
 WORKDIR /opt/treelist
 
-COPY --from=builder /opt/treelist/build/install/treelist-server .
-
 ENV MUSIC_DIR /music
 ENV CONFIG_DIR /config
 
@@ -23,5 +21,7 @@ VOLUME /music
 VOLUME /config
 
 EXPOSE 5000
+
+COPY --from=builder /opt/treelist/build/install/treelist-server .
 
 CMD bin/treelist-server

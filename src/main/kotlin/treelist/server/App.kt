@@ -132,6 +132,7 @@ fun main(args: Array<String>)
         get("/db/get")
         {
             this.ctx.send(Paths.get("$configDir/db.json"))
+                    .setResponseHeader("Access-Control-Allow-Origin", "*")
         }
 
         get("/db/gen")
@@ -139,6 +140,7 @@ fun main(args: Array<String>)
             refreshDB()
             this.ctx.setResponseType(MediaType.json)
                     .send(Paths.get("$configDir/db.json"))
+                    .setResponseHeader("Access-Control-Allow-Origin", "*")
         }
 
         setServerOptions(ServerOptions()
